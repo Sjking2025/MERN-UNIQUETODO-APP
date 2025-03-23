@@ -19,6 +19,8 @@ const Login = ({ onLogin }) => {
           'Content-Type': 'application/json',
         },
       });
+      
+      // Pass the response data (token + user) to onLogin
       onLogin(response.data);
       navigate('/dashboard');
     } catch (err) {

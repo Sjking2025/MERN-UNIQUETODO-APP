@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
@@ -6,7 +5,7 @@ import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-// import './styles/App.css';
+import './styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
@@ -19,7 +18,7 @@ const App = () => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('/api/auth/verify', {
+          const response = await axios.get('http://localhost:5000/api/auth/verify', {
             headers: { Authorization: `Bearer ${token}` },
           });
           setIsAuthenticated(true);
@@ -33,17 +32,12 @@ const App = () => {
     checkAuth();
   }, []);
 
-  // Login handler
-  const handleLogin = async (credentials) => {
-    try {
-      const response = await axios.post('/api/auth/login', credentials);
-      localStorage.setItem('token', response.data.token);
-      setIsAuthenticated(true);
-      setUser(response.data.user); // Ensure this matches the backend response
-      console.log('Login successful:', response.data.user); // Log the user data
-    } catch (err) {
-      alert('Login failed. Please check your credentials.');
-    }
+  // Login handler (now only sets state from the response)
+  const handleLogin = (data) => {
+    localStorage.setItem('token', data.token);
+    setIsAuthenticated(true);
+    setUser(data.user);
+    console.log('Login successful:', data.user); // Log the user data
   };
 
   // Logout handler

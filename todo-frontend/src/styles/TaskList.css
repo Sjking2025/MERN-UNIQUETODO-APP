@@ -1,0 +1,57 @@
+/* TaskList.css */
+.task-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.task-item {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.task-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.task-item h3 {
+  margin: 0 0 10px;
+  color: #4a90e2;
+  font-size: 1.4rem;
+}
+
+.task-item p {
+  margin: 0 0 10px;
+  color: #555;
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.task-actions button {
+  background-color: #ff6b6b;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.task-actions button:first-child {
+  background-color: #4a90e2;
+}
+
+.task-actions button:hover {
+  background-color: #ff4757;
+  transform: translateY(-2px);
+}
+
+.task-actions button:first-child:hover {
+  background-color: #357abd;
+}

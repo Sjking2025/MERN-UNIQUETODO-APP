@@ -1,8 +1,8 @@
-/* TaskList.css */
 .task-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 20px;
+  padding: 20px;
 }
 
 .task-item {
@@ -40,6 +40,7 @@
   padding: 8px 16px;
   font-size: 0.9rem;
   border-radius: 8px;
+  cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -54,4 +55,34 @@
 
 .task-actions button:first-child:hover {
   background-color: #357abd;
+}
+
+/* Filter dropdown */
+.task-list select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+/* Quote display */
+.quote {
+  background: #4a90e2;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Priority and due date styling */
+.task-item p.priority {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.task-item p.due-date {
+  color: #555;
+  font-style: italic;
 }

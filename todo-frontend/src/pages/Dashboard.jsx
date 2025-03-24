@@ -3,43 +3,44 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import TaskForm from '../components/TaskForm';
 import TaskList from '../components/TaskList';
+import MoodTracker from '../components/MoodTracker';
 import '../styles/Dashboard.css';
 
 const Dashboard = ({ user }) => {
-  const [tasks, setTasks] = useState([]); // Initialize as an empty array
+  const [tasks, setTasks] = useState([]);
+  const [moodData, setMoodData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Fetch tasks from the backend
+  // Fetch tasks and mood data
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/tasks', {
+        // Fetch tasks
+        const tasksResponse = await axios.get('http://localhost:5000/api/tasks', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        
-        // Ensure the response is an array
-        if (Array.isArray(response.data)) {
-          setTasks(response.data);
-        } else {
-          console.error('Invalid tasks data:', response.data);
-          setTasks([]); // Set tasks to an empty array
-        }
+        setTasks(tasksResponse.data);
+
+        // Fetch mood data
+        const moodResponse = await axios.get('http://localhost:5000/api/mood', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        setMoodData(moodResponse.data);
       } catch (err) {
-        console.error('Failed to fetch tasks:', err.response?.data);
+        console.error('Failed to fetch data:', err.response?.data);
         if (err.response?.status === 401) {
-          // Token is invalid or expired
           localStorage.removeItem('token');
           navigate('/login');
         } else {
-          setError('Failed to fetch tasks. Please try again later.');
+          setError('Failed to fetch data. Please try again later.');
         }
       } finally {
         setLoading(false);
       }
     };
-    fetchTasks();
+    fetchData();
   }, [navigate]);
 
   // Add a new task
@@ -81,26 +82,32 @@ const Dashboard = ({ user }) => {
     }
   };
 
+  // Handle drag-and-drop
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(tasks);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setTasks(items);
+  };
+
   return (
     <div className="dashboard-container">
       <h1>Welcome, {user?.username}!</h1>
-
-      {/* Display error messages */}
       {error && <p className="error">{error}</p>}
-
-      {/* Task Form */}
       <TaskForm onSubmit={addTask} />
-
-      {/* Loading State */}
       {loading ? (
         <p>Loading tasks...</p>
       ) : (
-        /* Task List */
-        tasks.length > 0 ? (
-          <TaskList tasks={tasks} onDelete={deleteTask} onUpdate={updateTask} />
-        ) : (
-          <p>No tasks found. Add a new task to get started!</p>
-        )
+        <>
+          <TaskList
+            tasks={tasks}
+            onDelete={deleteTask}
+            onUpdate={updateTask}
+            onDragEnd={onDragEnd}
+          />
+          <MoodTracker moodData={moodData} />
+        </>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import MoodTracker from './components/MoodTracker'; // Import MoodTracker component
 import './styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -84,6 +85,16 @@ const App = () => {
               element={
                 isAuthenticated ? (
                   <Dashboard user={user} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/mood-tracker" // Add this route
+              element={
+                isAuthenticated ? (
+                  <MoodTracker />
                 ) : (
                   <Navigate to="/login" />
                 )

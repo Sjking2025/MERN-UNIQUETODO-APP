@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = ({ onRegister }) => {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    email: '',
-    fullName: '',
+    username: "",
+    password: "",
+    email: "",
+    fullName: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,28 +20,32 @@ const Register = ({ onRegister }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/auth/register', formData, {
+      await axios.post("http://localhost:5000/api/auth/register", formData, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
-      const loginResponse = await axios.post('http://localhost:5000/api/auth/login', {
-        username: formData.username,
-        password: formData.password,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
+      const loginResponse = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          username: formData.username,
+          password: formData.password,
         },
-      });
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       onRegister(loginResponse.data);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      if (err.response?.data?.error?.includes('duplicate key')) {
-        setError('Email already exists. Please use a different email.');
+      if (err.response?.data?.error?.includes("duplicate key")) {
+        setError("Email already exists. Please use a different email.");
       } else {
-        setError('Registration failed. Please try again.');
+        setError("Registration failed. Please try again.");
       }
     }
   };
@@ -57,7 +61,10 @@ const Register = ({ onRegister }) => {
 
         {/* Right Side (Register Form) */}
         <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
-          <div className="card p-4 shadow" style={{ width: '100%', maxWidth: '400px' }}>
+          <div
+            className="card p-4 shadow"
+            style={{ width: "100%", maxWidth: "400px" }}
+          >
             <h2 className="text-center mb-4">Register</h2>
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit}>
@@ -105,7 +112,9 @@ const Register = ({ onRegister }) => {
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-primary w-100">Register</button>
+              <button type="submit" className="btn btn-primary w-100">
+                Register
+              </button>
             </form>
             <p className="mt-3 text-center">
               Already have an account? <a href="/login">Login here</a>.

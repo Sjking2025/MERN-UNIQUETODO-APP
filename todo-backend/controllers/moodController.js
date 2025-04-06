@@ -1,5 +1,5 @@
 // controllers/moodController.js
-const Mood = require('../models/Mood');
+const Mood = require("../models/Mood");
 
 exports.trackMood = async (req, res) => {
   try {
@@ -8,7 +8,7 @@ exports.trackMood = async (req, res) => {
     await newMood.save();
     res.status(201).json(newMood);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to track mood' });
+    res.status(500).json({ error: "Failed to track mood" });
   }
 };
 
@@ -17,6 +17,6 @@ exports.getMoodHistory = async (req, res) => {
     const moods = await Mood.find({ user: req.userId }).sort({ date: -1 });
     res.status(200).json(moods);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch mood history' });
+    res.status(500).json({ error: "Failed to fetch mood history" });
   }
 };

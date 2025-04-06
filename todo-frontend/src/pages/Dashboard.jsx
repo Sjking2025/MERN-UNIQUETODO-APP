@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import TaskForm from '../components/TaskForm';
-import TaskList from '../components/TaskList';
-import MoodTracker from '../components/MoodTracker';
-import '../styles/Dashboard.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import TaskForm from "../components/TaskForm";
+import TaskList from "../components/TaskList";
+import MoodTracker from "../components/MoodTracker";
+import "../styles/Dashboard.css";
 
 const Dashboard = ({ user }) => {
   const [tasks, setTasks] = useState([]);
   const [moodData, setMoodData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   // Fetch tasks and mood data
@@ -18,23 +18,28 @@ const Dashboard = ({ user }) => {
     const fetchData = async () => {
       try {
         // Fetch tasks
-        const tasksResponse = await axios.get('http://localhost:5000/api/tasks', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+        const tasksResponse = await axios.get(
+          "http://localhost:5000/api/tasks",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setTasks(tasksResponse.data);
 
         // Fetch mood data
-        const moodResponse = await axios.get('http://localhost:5000/api/mood', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        const moodResponse = await axios.get("http://localhost:5000/api/mood", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setMoodData(moodResponse.data);
       } catch (err) {
-        console.error('Failed to fetch data:', err.response?.data);
+        console.error("Failed to fetch data:", err.response?.data);
         if (err.response?.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/login');
+          localStorage.removeItem("token");
+          navigate("/login");
         } else {
-          setError('Failed to fetch data. Please try again later.');
+          setError("Failed to fetch data. Please try again later.");
         }
       } finally {
         setLoading(false);
@@ -46,13 +51,17 @@ const Dashboard = ({ user }) => {
   // Add a new task
   const addTask = async (task) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/tasks', task, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/tasks",
+        task,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setTasks([...tasks, response.data]);
     } catch (err) {
-      console.error('Failed to add task:', err.response?.data);
-      setError('Failed to add task. Please try again.');
+      console.error("Failed to add task:", err.response?.data);
+      setError("Failed to add task. Please try again.");
     }
   };
 
@@ -60,25 +69,29 @@ const Dashboard = ({ user }) => {
   const deleteTask = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setTasks(tasks.filter((task) => task._id !== id));
     } catch (err) {
-      console.error('Failed to delete task:', err.response?.data);
-      setError('Failed to delete task. Please try again.');
+      console.error("Failed to delete task:", err.response?.data);
+      setError("Failed to delete task. Please try again.");
     }
   };
 
   // Update a task
   const updateTask = async (id, updatedTask) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/tasks/${id}`, updatedTask, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      });
+      const response = await axios.put(
+        `http://localhost:5000/api/tasks/${id}`,
+        updatedTask,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setTasks(tasks.map((task) => (task._id === id ? response.data : task)));
     } catch (err) {
-      console.error('Failed to update task:', err.response?.data);
-      setError('Failed to update task. Please try again.');
+      console.error("Failed to update task:", err.response?.data);
+      setError("Failed to update task. Please try again.");
     }
   };
 

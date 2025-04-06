@@ -1,4 +1,4 @@
-const Task = require('../models/Task');
+const Task = require("../models/Task");
 
 // Add Task
 exports.addTask = async (req, res) => {
@@ -17,19 +17,22 @@ exports.getTasks = async (req, res) => {
   const { filter } = req.query;
   let query = { user: req.userId };
 
-  if (filter === 'completed') query.completed = true;
-  else if (filter === 'pending') query.completed = false;
-  else if (filter === 'dueToday') {
+  if (filter === "completed") query.completed = true;
+  else if (filter === "pending") query.completed = false;
+  else if (filter === "dueToday") {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    query.dueDate = { $gte: today, $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000) };
+    query.dueDate = {
+      $gte: today,
+      $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
+    };
   }
 
   try {
     const tasks = await Task.find(query);
     res.json(tasks);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch tasks' });
+    res.status(500).json({ error: "Failed to fetch tasks" });
   }
 };
 
@@ -49,12 +52,11 @@ exports.deleteTask = async (req, res) => {
   const { id } = req.params;
   try {
     await Task.findByIdAndDelete(id);
-    res.json({ message: 'Task deleted successfully' });
+    res.json({ message: "Task deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 exports.updateTaskCompletion = async (req, res) => {
   try {
@@ -73,6 +75,6 @@ exports.updateTaskCompletion = async (req, res) => {
 
     res.json(task);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update task' });
+    res.status(500).json({ error: "Failed to update task" });
   }
 };

@@ -1,14 +1,18 @@
-import React from 'react';
-import { Line } from 'react-chartjs-2';
+import React from "react";
+import { Line } from "react-chartjs-2";
 
 const MoodTracker = ({ moodData = [] }) => {
   const data = {
-    labels: moodData.map(entry => new Date(entry.date).toLocaleDateString()),
-    datasets: [{
-      label: 'Mood Trend',
-      data: moodData.map(entry => entry.mood === 'happy' ? 2 : entry.mood === 'neutral' ? 1 : 0),
-      borderColor: '#4a90e2',
-    }]
+    labels: moodData.map((entry) => new Date(entry.date).toLocaleDateString()),
+    datasets: [
+      {
+        label: "Mood Trend",
+        data: moodData.map((entry) =>
+          entry.mood === "happy" ? 2 : entry.mood === "neutral" ? 1 : 0
+        ),
+        borderColor: "#4a90e2",
+      },
+    ],
   };
 
   return (

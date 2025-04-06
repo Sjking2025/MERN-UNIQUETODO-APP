@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import axios from 'axios';
-import Navbar from './components/Navbar';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import MoodTracker from './components/MoodTracker'; // Import MoodTracker component
-import './styles/App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import axios from "axios";
+import Navbar from "./components/Navbar";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import MoodTracker from "./components/MoodTracker"; // Import MoodTracker component
+import "./styles/App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -16,16 +21,19 @@ const App = () => {
   // Check if the user is authenticated (e.g., by checking for a valid JWT token)
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
         try {
-          const response = await axios.get('http://localhost:5000/api/auth/verify', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const response = await axios.get(
+            "http://localhost:5000/api/auth/verify",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           setIsAuthenticated(true);
           setUser(response.data.user);
         } catch (err) {
-          localStorage.removeItem('token');
+          localStorage.removeItem("token");
           setIsAuthenticated(false);
         }
       }
@@ -35,15 +43,15 @@ const App = () => {
 
   // Login handler (now only sets state from the response)
   const handleLogin = (data) => {
-    localStorage.setItem('token', data.token);
+    localStorage.setItem("token", data.token);
     setIsAuthenticated(true);
     setUser(data.user);
-    console.log('Login successful:', data.user); // Log the user data
+    console.log("Login successful:", data.user); // Log the user data
   };
 
   // Logout handler
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setIsAuthenticated(false);
     setUser(null);
   };
@@ -72,7 +80,7 @@ const App = () => {
                 ) : (
                   <Register
                     onRegister={(data) => {
-                      localStorage.setItem('token', data.token);
+                      localStorage.setItem("token", data.token);
                       setIsAuthenticated(true);
                       setUser(data.user);
                     }}
@@ -93,11 +101,7 @@ const App = () => {
             <Route
               path="/mood-tracker" // Add this route
               element={
-                isAuthenticated ? (
-                  <MoodTracker />
-                ) : (
-                  <Navigate to="/login" />
-                )
+                isAuthenticated ? <MoodTracker /> : <Navigate to="/login" />
               }
             />
             <Route

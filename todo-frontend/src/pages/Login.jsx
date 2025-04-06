@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
-        username,
-        password,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          username,
+          password,
         },
-      });
-      
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       // Pass the response data (token + user) to onLogin
       onLogin(response.data);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      setError('Invalid username or password');
+      setError("Invalid username or password");
     }
   };
 
@@ -39,7 +43,10 @@ const Login = ({ onLogin }) => {
 
         {/* Right Side (Login Form) */}
         <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
-          <div className="card p-4 shadow" style={{ width: '100%', maxWidth: '400px' }}>
+          <div
+            className="card p-4 shadow"
+            style={{ width: "100%", maxWidth: "400px" }}
+          >
             <h2 className="text-center mb-4">Login</h2>
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit}>
@@ -63,7 +70,9 @@ const Login = ({ onLogin }) => {
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-primary w-100">Login</button>
+              <button type="submit" className="btn btn-primary w-100">
+                Login
+              </button>
             </form>
             <p className="mt-3 text-center">
               Don't have an account? <a href="/register">Register here</a>.

@@ -55,7 +55,7 @@ This is a full-stack MERN application that combines a classic todo list with a m
 
     ```bash
     git clone https://github.com/Sjking2025/MERN-UNIQUETODO-APP.git
-    cd your-repo-name
+    cd MERN-UNIQUETODO-APP
     ```
 
 2.  **Backend Setup:**

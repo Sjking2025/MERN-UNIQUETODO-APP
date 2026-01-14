@@ -6,19 +6,20 @@ import {
   Navigate,
 } from "react-router-dom";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import MoodTracker from "./components/MoodTracker"; // Import MoodTracker component
-import "./styles/App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+import MoodTracker from "./components/MoodTracker";
+import "./index.css";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Check if the user is authenticated (e.g., by checking for a valid JWT token)
+  // Check if the user is authenticated
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("token");
@@ -37,16 +38,16 @@ const App = () => {
           setIsAuthenticated(false);
         }
       }
+      setLoading(false);
     };
     checkAuth();
   }, []);
 
-  // Login handler (now only sets state from the response)
+  // Login handler
   const handleLogin = (data) => {
     localStorage.setItem("token", data.token);
     setIsAuthenticated(true);
     setUser(data.user);
-    console.log("Login successful:", data.user); // Log the user data
   };
 
   // Logout handler
@@ -56,66 +57,80 @@ const App = () => {
     setUser(null);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full"
+        />
+      </div>
+    );
+  }
+
   return (
     <Router>
-      <div className="App">
-        <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-        <div className="container">
-          <Routes>
-            <Route
-              path="/login"
-              element={
-                isAuthenticated ? (
-                  <Navigate to="/dashboard" />
-                ) : (
-                  <Login onLogin={handleLogin} />
-                )
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                isAuthenticated ? (
-                  <Navigate to="/dashboard" />
-                ) : (
-                  <Register
-                    onRegister={(data) => {
-                      localStorage.setItem("token", data.token);
-                      setIsAuthenticated(true);
-                      setUser(data.user);
-                    }}
-                  />
-                )
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                isAuthenticated ? (
-                  <Dashboard user={user} />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="/mood-tracker" // Add this route
-              element={
-                isAuthenticated ? <MoodTracker /> : <Navigate to="/login" />
-              }
-            />
-            <Route
-              path="/"
-              element={
-                isAuthenticated ? (
-                  <Navigate to="/dashboard" />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-          </Routes>
-        </div>
+      <div className="min-h-screen">
+        <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} user={user} />
+        <main className="pt-20 px-4 max-w-6xl mx-auto">
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route
+                path="/login"
+                element={
+                  isAuthenticated ? (
+                    <Navigate to="/dashboard" />
+                  ) : (
+                    <Login onLogin={handleLogin} />
+                  )
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  isAuthenticated ? (
+                    <Navigate to="/dashboard" />
+                  ) : (
+                    <Register
+                      onRegister={(data) => {
+                        localStorage.setItem("token", data.token);
+                        setIsAuthenticated(true);
+                        setUser(data.user);
+                      }}
+                    />
+                  )
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  isAuthenticated ? (
+                    <Dashboard user={user} />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+              <Route
+                path="/mood-tracker"
+                element={
+                  isAuthenticated ? <MoodTracker /> : <Navigate to="/login" />
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  isAuthenticated ? (
+                    <Navigate to="/dashboard" />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+            </Routes>
+          </AnimatePresence>
+        </main>
       </div>
     </Router>
   );

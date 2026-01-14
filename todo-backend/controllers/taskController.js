@@ -1,12 +1,19 @@
 const Task = require("../models/Task");
+const User = require("../models/User");
 
 // Add Task
 exports.addTask = async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, priority, dueDate } = req.body;
   try {
-    const task = new Task({ title, description, user: req.userId });
+    const task = new Task({
+      title,
+      description,
+      priority: priority || "medium",
+      dueDate: dueDate || new Date(),
+      user: req.userId
+    });
     await task.save();
-    res.status(201).json(task); // Return the created task
+    res.status(201).json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -2,12 +2,15 @@ const express = require("express");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
-const moodRoutes = require("./routes/moodRoutes"); // Add mood routes
+const moodRoutes = require("./routes/moodRoutes");
 const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true
+}));
 app.use(express.json());
 
 // Connect to MongoDB

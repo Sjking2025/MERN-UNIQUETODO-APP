@@ -1,85 +1,134 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import axios from "axios";
+import { Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/Card";
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+    
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
-        {
-          username,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { username, password },
+        { headers: { "Content-Type": "application/json" } }
       );
-
-      // Pass the response data (token + user) to onLogin
       onLogin(response.data);
       navigate("/dashboard");
     } catch (err) {
       setError("Invalid username or password");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container-fluid vh-100">
-      <div className="row h-100">
-        {/* Left Side (Gradient/Image) */}
-        <div className="col-md-6 bg-primary d-flex flex-column justify-content-center align-items-center text-white">
-          <h1 className="display-4">Welcome Back!</h1>
-          <p className="lead">Login to manage your tasks.</p>
-        </div>
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center py-12">
+      {/* Background Decorations */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl" />
+      </div>
 
-        {/* Right Side (Login Form) */}
-        <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
-          <div
-            className="card p-4 shadow"
-            style={{ width: "100%", maxWidth: "400px" }}
-          >
-            <h2 className="text-center mb-4">Login</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <input
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md relative z-10"
+      >
+        <Card className="glow-purple">
+          <CardHeader className="text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring" }}
+              className="mx-auto mb-4 p-4 rounded-2xl bg-primary/20 w-fit"
+            >
+              <Sparkles className="w-8 h-8 text-primary" />
+            </motion.div>
+            <CardTitle className="text-2xl gradient-text">Welcome Back!</CardTitle>
+            <CardDescription>Sign in to continue your productivity journey</CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="p-3 rounded-lg bg-destructive/20 text-red-400 text-sm text-center"
+                >
+                  {error}
+                </motion.div>
+              )}
+
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Username</label>
+                <Input
                   type="text"
-                  className="form-control"
-                  placeholder="Username"
+                  icon={Mail}
+                  placeholder="Enter your username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </div>
-              <div className="mb-3">
-                <input
+
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Password</label>
+                <Input
                   type="password"
-                  className="form-control"
-                  placeholder="Password"
+                  icon={Lock}
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-primary w-100">
-                Login
-              </button>
+
+              <Button
+                type="submit"
+                className="w-full mt-6"
+                disabled={loading}
+              >
+                {loading ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                  />
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </>
+                )}
+              </Button>
             </form>
-            <p className="mt-3 text-center">
-              Don't have an account? <a href="/register">Register here</a>.
+          </CardContent>
+
+          <CardFooter className="justify-center">
+            <p className="text-sm text-muted-foreground">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-primary hover:underline">
+                Create one
+              </Link>
             </p>
-          </div>
-        </div>
-      </div>
+          </CardFooter>
+        </Card>
+      </motion.div>
     </div>
   );
 };
